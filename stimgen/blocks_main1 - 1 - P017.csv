@@ -1,0 +1,5 @@
+blockID,sourceImage,volatility,blockFileName
+1,radioactive2.png,0,MainVaJmpSession5_block1.csv
+2,radioactive3.png,1,MainVaJmpSession5_block2.csv
+4,radioactive2.png,0,MainVaJmpSession5_block4.csv
+3,radioactive3.png,1,MainVaJmpSession5_block3.csv
