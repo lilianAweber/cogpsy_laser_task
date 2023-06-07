@@ -11,12 +11,21 @@ else
 end
 
 fh = figure;
+if session.nBlocks > 1
+    nLines = session.nBlocks / 4;
+    nCols = 4;
+else
+    nLines = 1;
+    nCols = 1;
+end
 for iBlock = 1:session.nBlocks
-    subplot(2, 2, iBlock)
+    subplot(nLines, nCols, iBlock)
     plot(session.blocks(iBlock).stim.time, session.blocks(iBlock).stim.(val), '-k');
     hold on; 
     plot(session.blocks(iBlock).stim.time, session.blocks(iBlock).stim.(avg), '-y', 'linewidth', 2);
     title(['block type ' session.blocks(iBlock).blockType]);
 end
+
+linkaxes
 
 end

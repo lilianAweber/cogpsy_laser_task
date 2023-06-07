@@ -1,0 +1,5 @@
+blockID,sourceImage,volatility,stochasticity,blockFileName,toneVolatility,toneStochasticity,toneSeqFileName
+1,radioactive3.png,0,0,main_v1_block1.csv,0,0,mmn/mmn_v1_block1.csv
+2,radioactive2.png,1,0,main_v1_block3.csv,1,0,mmn/mmn_v1_block3.csv
+3,radioactive3.png,0,0,main_v1_block2.csv,0,0,mmn/mmn_v1_block2.csv
+4,radioactive2.png,1,0,main_v1_block4.csv,1,0,mmn/mmn_v1_block4.csv

@@ -24,4 +24,6 @@ end
 stim.valuesDeg = mod(stim.values, 360);
 stim.valueVectorDeg = mod(stim.valueVector, 360);
 
+stim.stdValueVectorDeg = noise*ones(1, numel(stim.valueVectorDeg));
+
 end
