@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 This experiment was created using PsychoPy3 Experiment Builder (v2022.1.2),
-    on Tue 06 Jun 2023 23:29:38 
+    on Thu 08 Jun 2023 09:06:49 
 If you publish work using this script the most relevant publication is:
 
     Peirce J, Gray JR, Simpson S, MacAskill M, Höchenberger R, Sogo H, Kastman E, Lindeløv JK. (2019) 
@@ -127,21 +127,24 @@ sequenceRoot = 'sequences/'
 dataRoot = 'data/'
 imageRoot = 'images/'
 # retrieve the current session csv file
-#sessionFileName = (sequenceRoot + "cogpsy_order" + str(expInfo['order']) + 
-#    ".csv")
+sessionFileName = (sequenceRoot + "cogpsy_main_v1_order" + str(expInfo['order']) + 
+    "/session_s1_main_v1.csv")
     
 # initialise list containing data to be saved
-saveData = [["phase","blockID","currentFrame","laserRotation",
-    "shieldRotation","shieldDegrees","currentHit","totalReward",
-    "sendTrigger","triggerValue","trueMean","trueVariance",
-    "volatility","stochasticity","toneTrigger","toneVolatility",
-    "toneStochasticity"]];
-#saveFilename = (dataRoot + "sub-" + str(expInfo['participant']) + 
-#    "_task-laser.csv")
+#saveData = [["phase","blockID","currentFrame","laserRotation",
+  #  "shieldRotation","shieldDegrees","currentHit","totalReward",
+   # "sendTrigger","triggerValue","trueMean","trueVariance",
+    #"volatility","stochasticity","toneTrigger","toneVolatility",
+    #"toneStochasticity"]];
+saveFilename = (dataRoot + "sub-" + str(expInfo['participant']) + 
+    "_task-laser.csv")
     
 #initialise list containing data to be saved
-saveData = [["blockID","currentFrame","laserRotation","shieldRotation","shieldDegrees","currentHit","totalReward","sendTrigger","triggerValue","trueMean","trueVariance","volatility", "eyePosition"]]
-saveFilename = "savedData_" + str(expInfo['participant']) + ".csv" 
+saveData = [["blockID","currentFrame","laserRotation",
+    "shieldRotation","shieldDegrees","currentHit","totalReward",
+    "sendTrigger","triggerValue","trueMean","trueVariance",
+    "volatility", "eyePosition"]]
+#saveFilename = "savedData_" + str(expInfo['participant']) + ".csv" 
 
 # hide the mouse
 win.mouseVisible = False
@@ -1175,7 +1178,7 @@ routineTimer.reset()
 # set up handler to look after randomisation of conditions etc
 blocks = data.TrialHandler(nReps=1.0, method='sequential', 
     extraInfo=expInfo, originPath=-1,
-    trialList=data.importConditions('stimgen/blocks_main1 - 2 - P019.csv'),
+    trialList=data.importConditions(sessionFileName),
     seed=None, name='blocks')
 thisExp.addLoop(blocks)  # add the loop to the experiment
 thisBlock = blocks.trialList[0]  # so we can initialise stimuli with some values
@@ -1318,26 +1321,38 @@ for thisBlock in blocks:
     shieldCoords = np.transpose(np.vstack((shieldX,shieldY)))
     
     #load stimulusStream into NumPy array
-    rootdir = os.getcwd()
-    stimStreamPath = os.path.join(rootdir,'stimgen',blockFileName)
-    storedStream_np = np.loadtxt(stimStreamPath,delimiter=",")
-    
+    block_path = sequenceRoot + blockFileName
+    f = open(block_path, 'r')
+    storedStream_np = []
+    for line in f:
+        words = line.split(',')
+        storedStream_np.append((words[0], words[1], words[2]))
+        
     #load stimulusStream into NumPy array
-    #block_path = sequenceRoot + blockFileName
-    #f = open(block_path, 'r')
-    #storedStream_np = []
-    #for line in f:
-    #    words = line.split(',')
-    #    storedStream_np.append((words[0], words[1], words[2]))
+    #rootdir = os.getcwd()
+    #stimStreamPath = os.path.join(rootdir,'sequences',blockFileName)
+    #storedStream_np = np.loadtxt(stimStreamPath,delimiter=",")
     
-    shieldRotation = 360; #begin at top
+    shieldRotation = 360 #begin at top
     
     #calculate the total number of frames in the experiment
-    nFrames = np.shape(storedStream_np)[0] - 1;
-    currentFrame = 0;
-    laserRotation = storedStream_np[0,1];
-    trueMean = storedStream_np[0,0];
-    trueVariance = storedStream_np[0,2];
+    nFrames = len(storedStream_np) - 2 # try debug IndexError:list index out of range
+    #nFrames = len(storedStream_np) - 1; # equivalent to np.shape
+    #nFrames = np.shape(storedStream_np)[0] - 1;
+    currentFrame = 0
+    
+    #the ValueError: could not convert string to float error originates here
+    #need to start reading from the 2nd row rather than the 1st row (with header text)
+    #let's get rid of the first row since it's giving us headaches
+    storedStream_np.pop(0)
+    
+    trueMean = float(storedStream_np[0][0])
+    laserRotation = float(storedStream_np[0][1])
+    trueVariance = float(storedStream_np[0][2])
+    
+    #laserRotation = storedStream_np[0,1];
+    #trueMean = storedStream_np[0,0];
+    #trueVariance = storedStream_np[0,2];
     
     #update variables to draw polygon
     laserXcoord = CIRCLE_RADIUS*cos(deg2rad(laserRotation));
@@ -1452,11 +1467,12 @@ for thisBlock in blocks:
         shieldCoords = np.transpose(np.vstack((shieldX,shieldY)))
         
         if currentFrame<nFrames:
-            laserRotation = storedStream_np[currentFrame,1];
-            trueMean = storedStream_np[currentFrame,0];
-            trueVariance = storedStream_np[currentFrame,2];
+            laserRotation = float(storedStream_np[currentFrame][1])#storedStream_np[currentFrame,1];
+            trueMean = float(storedStream_np[currentFrame][0])#storedStream_np[currentFrame,0];
+            trueVariance = float(storedStream_np[currentFrame][2])#storedStream_np[currentFrame,2];
             if currentFrame > 0:
-                if storedStream_np[currentFrame, 1] != storedStream_np[currentFrame - 1, 1]:
+                if float(storedStream_np[currentFrame][1]) != float(storedStream_np[currentFrame-1][1]):#storedStream_np[currentFrame - 1, 1]:
+                #if currentFrame > 1:
                     laser_frame_ct = 0;
                 else:
                     laser_frame_ct = laser_frame_ct + 1;
@@ -1495,7 +1511,7 @@ for thisBlock in blocks:
                     totalReward = 0;
                 
         if currentFrame > 0:
-            if (storedStream_np[currentFrame,1] != storedStream_np[currentFrame-1,1]):
+            if float(storedStream_np[currentFrame][1]) != float(storedStream_np[currentFrame-1][1]):
                 #we only send a stimulus trigger if we don't already have a response to send
                 if not sendTrigger:
                     #we'll send different stim change triggers depending on hit/no-hit
