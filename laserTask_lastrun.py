@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 This experiment was created using PsychoPy3 Experiment Builder (v2022.1.2),
-    on Thu 08 Jun 2023 09:06:49 
+    on Fri 09 Jun 2023 11:42:00 
 If you publish work using this script the most relevant publication is:
 
     Peirce J, Gray JR, Simpson S, MacAskill M, Höchenberger R, Sogo H, Kastman E, Lindeløv JK. (2019) 
@@ -127,8 +127,8 @@ sequenceRoot = 'sequences/'
 dataRoot = 'data/'
 imageRoot = 'images/'
 # retrieve the current session csv file
-sessionFileName = (sequenceRoot + "cogpsy_main_v1_order" + str(expInfo['order']) + 
-    "/session_s1_main_v1.csv")
+sessionFileName = (sequenceRoot + "cogpsy_main_v1_order" 
+    + str(expInfo['order']) + "/session_s1_main_v1.csv")
     
 # initialise list containing data to be saved
 #saveData = [["phase","blockID","currentFrame","laserRotation",
@@ -143,7 +143,7 @@ saveFilename = (dataRoot + "sub-" + str(expInfo['participant']) +
 saveData = [["blockID","currentFrame","laserRotation",
     "shieldRotation","shieldDegrees","currentHit","totalReward",
     "sendTrigger","triggerValue","trueMean","trueVariance",
-    "volatility", "eyePosition"]]
+    "volatility"]]
 #saveFilename = "savedData_" + str(expInfo['participant']) + ".csv" 
 
 # hide the mouse
@@ -1737,6 +1737,7 @@ for thisBlock in blocks:
     totalReward_tot = totalReward_tot + totalReward;
     totalReward_text = "£%.2f" %(totalReward);
     
+    # save the output data for this block
     np.savetxt(saveFilename,saveData,delimiter=",",fmt="%s")
     #win.callOnFlip(trialTrigger.setData, int(0))
     triggerValue = 0;
