@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 This experiment was created using PsychoPy3 Experiment Builder (v2022.1.2),
-    on Fri 09 Jun 2023 11:42:00 
+    on Fri 09 Jun 2023 20:42:37 
 If you publish work using this script the most relevant publication is:
 
     Peirce J, Gray JR, Simpson S, MacAskill M, Höchenberger R, Sogo H, Kastman E, Lindeløv JK. (2019) 
@@ -131,19 +131,18 @@ sessionFileName = (sequenceRoot + "cogpsy_main_v1_order"
     + str(expInfo['order']) + "/session_s1_main_v1.csv")
     
 # initialise list containing data to be saved
-#saveData = [["phase","blockID","currentFrame","laserRotation",
-  #  "shieldRotation","shieldDegrees","currentHit","totalReward",
-   # "sendTrigger","triggerValue","trueMean","trueVariance",
-    #"volatility","stochasticity","toneTrigger","toneVolatility",
-    #"toneStochasticity"]];
+saveData = [["phase","blockID","currentFrame","laserRotation",
+    "shieldRotation","shieldDegrees","currentHit","totalReward",
+    "sendTrigger","triggerValue","trueMean","trueVariance",
+    "volatility","toneTrigger","toneVolatility"]];
 saveFilename = (dataRoot + "sub-" + str(expInfo['participant']) + 
     "_task-laser.csv")
     
 #initialise list containing data to be saved
-saveData = [["blockID","currentFrame","laserRotation",
-    "shieldRotation","shieldDegrees","currentHit","totalReward",
-    "sendTrigger","triggerValue","trueMean","trueVariance",
-    "volatility"]]
+#saveData = [["blockID","currentFrame","laserRotation",
+#    "shieldRotation","shieldDegrees","currentHit","totalReward",
+#    "sendTrigger","triggerValue","trueMean","trueVariance",
+#    "volatility"]]
 #saveFilename = "savedData_" + str(expInfo['participant']) + ".csv" 
 
 # hide the mouse
@@ -328,6 +327,59 @@ text_practiceBlock = visual.TextStim(win=win, name='text_practiceBlock',
     languageStyle='LTR',
     depth=0.0);
 key_resp_practiceBlock = keyboard.Keyboard()
+
+# Initialize components for Routine "practiceBlock"
+practiceBlockClock = core.Clock()
+harmless_area_practice = visual.ShapeStim(
+    win=win, name='harmless_area_practice',units='cm', 
+    size=(6.6, 6.6), vertices='circle',
+    ori=0.0, pos=(0, 0), anchor='center',
+    lineWidth=1.0,     colorSpace='rgb',  lineColor=[0, 0, 0], fillColor=[0, 0, 0],
+    opacity=None, depth=-1.0, interpolate=True)
+shield_practice = visual.ShapeStim(
+    win=win, name='shield_practice', vertices=shieldCoords,units='cm', 
+    size=(1.1, 1.1),
+    ori=1.0, pos=(0, 0), anchor='center',
+    lineWidth=1.0,     colorSpace='rgb',  lineColor='white', fillColor='white',
+    opacity=None, depth=-2.0, interpolate=True)
+shield_centre_practice = visual.ShapeStim(
+    win=win, name='shield_centre_practice', vertices=[[0, 0], [0, CIRCLE_RADIUS*1.2]],units='cm', 
+    size=(1, 1),
+    ori=1.0, pos=[0,0], anchor='center',
+    lineWidth=3.0,     colorSpace='rgb',  lineColor='blue', fillColor='blue',
+    opacity=None, depth=-3.0, interpolate=True)
+shield_bg_short_practice = visual.ShapeStim(
+    win=win, name='shield_bg_short_practice', vertices=shieldCoords,units='cm', 
+    size=(1, 1),
+    ori=1.0, pos=(0, 0), anchor='center',
+    lineWidth=1.0,     colorSpace='rgb',  lineColor='white', fillColor='white',
+    opacity=None, depth=-4.0, interpolate=True)
+laser_practice = visual.ShapeStim(
+    win=win, name='laser_practice', vertices=[[0, 0], [0, CIRCLE_RADIUS*1.1]],units='cm', 
+    size=[1.0, 1.0],
+    ori=1.0, pos=[0,0], anchor='center',
+    lineWidth=10.0,     colorSpace='rgb',  lineColor='red', fillColor='red',
+    opacity=None, depth=-5.0, interpolate=True)
+laser_long_practice = visual.ShapeStim(
+    win=win, name='laser_long_practice', vertices=[[0, 0], [0, CIRCLE_RADIUS*1.4]],units='cm', 
+    size=[1.0, 1.0],
+    ori=1.0, pos=[0,0], anchor='center',
+    lineWidth=10.0,     colorSpace='rgb',  lineColor='red', fillColor='red',
+    opacity=1.0, depth=-6.0, interpolate=True)
+progress_bar_practice = visual.ShapeStim(
+    win=win, name='progress_bar_practice', vertices=pc_coords,units='cm', 
+    size=(0.3, 0.3),
+    ori=1.0, pos=(0, 0), anchor='center',
+    lineWidth=10.0,     colorSpace='rgb',  lineColor='green', fillColor='white',
+    opacity=None, depth=-7.0, interpolate=True)
+radioactive_practice = visual.ImageStim(
+    win=win,
+    name='radioactive_practice', units='cm', 
+    image='sin', mask=None, anchor='center',
+    ori=0.0, pos=(0, 0), size=(2, 2),
+    color=[1, 1, 1], colorSpace='rgb', opacity=None,
+    flipHoriz=False, flipVert=False,
+    texRes=128.0, interpolate=True, depth=-8.0)
 
 # Initialize components for Routine "instructions_mainTask"
 instructions_mainTaskClock = core.Clock()
@@ -961,6 +1013,465 @@ thisExp.nextEntry()
 # the Routine "instructions_practiceBlock" was not non-slip safe, so reset the non-slip timer
 routineTimer.reset()
 
+# ------Prepare to start Routine "practiceBlock"-------
+continueRoutine = True
+# update component parameters for each repeat
+# this is phase 0 (practice)
+phaseN = 0
+blockID = 0
+
+# radioactive source image: yellow
+sourceImageFile = os.path.join(imageRoot,"radioactive1.png")
+volatility = 2
+
+# we do not present any tones in this block
+toneTrigger = 0
+toneVolatility = 0
+
+#load stimulusStream into NumPy array
+block_path = sequenceRoot + "practice_v1_block1.csv"
+f = open(block_path, 'r')
+storedStream_np = []
+for line in f:
+    words = line.split(',')
+    storedStream_np.append((words[0], words[1], words[2]))
+    
+# calculate the total number of frames in this block
+nFrames = len(storedStream_np) - 2
+currentFrame = 0
+
+#the ValueError: could not convert string to float error originates here
+#need to start reading from the 2nd row rather than the 1st row (with header text)
+#let's get rid of the first row since it's giving us headaches
+storedStream_np.pop(0)
+
+trueMean = float(storedStream_np[0][0])
+laserRotation = float(storedStream_np[0][1])
+trueVariance = float(storedStream_np[0][2])
+
+#initialise variables that will be updated as experiment progresses
+triggerValue = 11
+sendTrigger = True
+#start by sending a trigger when subject presses a button
+sendResponseTriggers = True
+totalReward = 1;
+hit_i = 0
+first_hit = 0
+
+shieldRotation = 360 #begin at top
+shieldDegrees = 20; #because it needs to be predefined
+shieldWidth = np.sin(np.radians(shieldDegrees))*CIRCLE_RADIUS*1.5;
+shieldHeight = np.cos(np.radians(shieldDegrees))*CIRCLE_RADIUS*1.5;
+
+#calculate the screen X and Y locations that correspond to the shield centre
+shieldX=np.sin(np.arange(np.radians(-shieldDegrees),np.radians(shieldDegrees),np.radians(shieldDegrees)/20))*CIRCLE_RADIUS*1.1;
+shieldY=np.cos(np.arange(np.radians(-shieldDegrees),np.radians(shieldDegrees),np.radians(shieldDegrees)/20))*CIRCLE_RADIUS*1.1;
+shieldX = np.concatenate(([0],shieldX));
+shieldY = np.concatenate(([0],shieldY));
+shieldCoords = np.transpose(np.vstack((shieldX,shieldY)))
+
+#update variables to draw polygon
+laserXcoord = CIRCLE_RADIUS*cos(deg2rad(laserRotation));
+laserYcoord = CIRCLE_RADIUS*sin(deg2rad(laserRotation));
+
+# laser variables
+unique, counts = np.unique(storedStream_np, return_counts=True);
+laser_on = min(counts);
+laser_frame_ct = 0;
+
+laser_practice.setAutoDraw(False);
+laser_long_practice.setAutoDraw(False);
+
+#progress circle variables
+pc_orientation = 0;
+pc_degrees = 0;
+pc_X=np.sin(np.arange(np.radians(-pc_degrees),np.radians(pc_degrees),np.radians(10)/20))*CIRCLE_RADIUS*1.1;
+pc_Y=np.cos(np.arange(np.radians(-pc_degrees),np.radians(pc_degrees),np.radians(10)/20))*CIRCLE_RADIUS*1.1;
+pc_X = np.concatenate(([0],pc_X));
+pc_Y = np.concatenate(([0],pc_Y));
+pc_coords = np.transpose(np.vstack((pc_X,pc_Y)))
+laser_practice.setPos((0, 0))
+laser_practice.setSize((1, 1))
+laser_long_practice.setPos((0, 0))
+laser_long_practice.setSize((1, 1))
+radioactive_practice.setImage(sourceImageFile)
+# keep track of which components have finished
+practiceBlockComponents = [harmless_area_practice, shield_practice, shield_centre_practice, shield_bg_short_practice, laser_practice, laser_long_practice, progress_bar_practice, radioactive_practice]
+for thisComponent in practiceBlockComponents:
+    thisComponent.tStart = None
+    thisComponent.tStop = None
+    thisComponent.tStartRefresh = None
+    thisComponent.tStopRefresh = None
+    if hasattr(thisComponent, 'status'):
+        thisComponent.status = NOT_STARTED
+# reset timers
+t = 0
+_timeToFirstFrame = win.getFutureFlipTime(clock="now")
+practiceBlockClock.reset(-_timeToFirstFrame)  # t0 is time of first possible flip
+frameN = -1
+
+# -------Run Routine "practiceBlock"-------
+while continueRoutine:
+    # get current time
+    t = practiceBlockClock.getTime()
+    tThisFlip = win.getFutureFlipTime(clock=practiceBlockClock)
+    tThisFlipGlobal = win.getFutureFlipTime(clock=None)
+    frameN = frameN + 1  # number of completed frames (so 0 is the first frame)
+    # update/draw components on each frame
+    #determine whether laser is crossing the shield
+    if hit_i:
+        hit_i = 0
+    else:
+        if first_hit:
+            laser_long_practice.setAutoDraw(True)
+            
+    if totalReward <= 0:
+        totalReward = 0.1;
+    
+    #do not send a trigger on every frame, only if laser position changes or subject presses a button
+    sendTrigger = False
+    keyReleaseThisFrame = False
+    triggerValue = 0
+    send_trigger(triggerValue)
+    #win.callOnFlip(trialTrigger.setData, int(0))
+    
+    #first, find out if L/R keys have been *released*
+    LRkeys_released = kb.getKeys(keyList=keys_move,clear=True,waitRelease=True)
+    if len(LRkeys_released)>0: #if so, then flush out the keys one final time
+        LRkeys_pressed = kb.getKeys(keyList=keys_move,clear=True,waitRelease=False)
+        triggerValue = 7
+        sendTrigger = True
+        send_trigger(triggerValue)
+        #win.callOnFlip(trialTrigger.setData, int(triggerValue))
+        keyReleaseThisFrame = True
+    else: #otherwise, put the currently pressed keys into a list, finishing with the most recently pressed
+        LRkeys_pressed = kb.getKeys(keyList=keys_move,clear=False,waitRelease=False)
+    
+    #if key is pressed, rotate cursor
+    #using most recently pressed key
+    if len(LRkeys_pressed)>0:
+        if LRkeys_pressed[-1]==key_right:
+            shieldRotation += ROTATION_SPEED;
+            newTriggerValue = 3
+        if LRkeys_pressed[-1]==key_left:
+            shieldRotation -= ROTATION_SPEED;
+            newTriggerValue = 4
+        if sendResponseTriggers:
+            triggerValue = newTriggerValue
+            sendTrigger = True
+            send_trigger(triggerValue)
+            #win.callOnFlip(trialTrigger.setData, int(triggerValue))
+            #stop triggering responses until key has been released again
+            sendResponseTriggers = False
+    
+    shieldWidth = np.sin(np.radians(shieldDegrees))*CIRCLE_RADIUS*1.5;
+    shieldHeight = np.cos(np.radians(shieldDegrees))*CIRCLE_RADIUS*1.5;
+    
+    shieldX = np.sin(np.arange(np.radians(-shieldDegrees),np.radians(shieldDegrees),np.radians(shieldDegrees)/20))*CIRCLE_RADIUS*1.1;
+    shieldY = np.cos(np.arange(np.radians(-shieldDegrees),np.radians(shieldDegrees),np.radians(shieldDegrees)/20))*CIRCLE_RADIUS*1.1;
+    shieldX = np.concatenate(([0],shieldX));
+    shieldY = np.concatenate(([0],shieldY));
+    shieldCoords = np.transpose(np.vstack((shieldX,shieldY)))
+    
+    if currentFrame<nFrames:
+        laserRotation = float(storedStream_np[currentFrame][1])#storedStream_np[currentFrame,1];
+        trueMean = float(storedStream_np[currentFrame][0])#storedStream_np[currentFrame,0];
+        trueVariance = float(storedStream_np[currentFrame][2])#storedStream_np[currentFrame,2];
+        if currentFrame > 0:
+            if float(storedStream_np[currentFrame][1]) != float(storedStream_np[currentFrame-1][1]):#storedStream_np[currentFrame - 1, 1]:
+            #if currentFrame > 1:
+                laser_frame_ct = 0;
+            else:
+                laser_frame_ct = laser_frame_ct + 1;
+    
+            if laser_frame_ct <= laser_on:
+                laser_practice.setAutoDraw(True);
+                laser_long_practice.setAutoDraw(True);
+            else:
+                laser_practice.setAutoDraw(False);
+                laser_long_practice.setAutoDraw(False);
+    
+    #calculate whether shield is currently hit by laser
+    currentHit = (shieldRotation - laserRotation + shieldDegrees)%360 <= (2*shieldDegrees);
+    
+    #determine whether laser position has changed
+    if currentFrame == 0:
+        if not sendTrigger:
+            #we'll send different stim change triggers depending on hit/no-hit
+            if currentHit:
+                triggerValue = 1
+            else:
+                triggerValue = 2
+    
+            sendTrigger = True
+            send_trigger(triggerValue)
+            #win.callOnFlip(trialTrigger.setData, int(triggerValue))
+    
+        if currentHit:
+            totalReward = totalReward;
+            hit_i = 1;
+            first_hit = 1;
+        else:
+            if totalReward > 0:
+                totalReward = totalReward - lossFactor;
+            else:
+                totalReward = 0;
+            
+    if currentFrame > 0:
+        if float(storedStream_np[currentFrame][1]) != float(storedStream_np[currentFrame-1][1]):
+            #we only send a stimulus trigger if we don't already have a response to send
+            if not sendTrigger:
+                #we'll send different stim change triggers depending on hit/no-hit
+                if currentHit:
+                    triggerValue = 1
+                else:
+                    triggerValue = 2
+    
+                sendTrigger = True
+                send_trigger(triggerValue)
+                #win.callOnFlip(trialTrigger.setData, int(triggerValue))
+    
+            if currentHit:
+                totalReward = totalReward;
+                hit_i = 1;
+                first_hit = 1;
+            else:
+                if totalReward > 0:
+                    totalReward = totalReward - lossFactor;
+                else:
+                    totalReward = 0;
+    
+    #update the shieldRedness according to whether we are currently hitting/missing the shield
+    if currentHit:
+        laser_long_opacity = 0;    
+        shieldColour = [1, 1-(1-laser_long_opacity), 1-(1-laser_long_opacity)];
+    else:
+        laser_long_opacity = 1
+        shieldColour = [1, 1-(1-laser_long_opacity), 1-(1-laser_long_opacity)];
+    
+    if keyReleaseThisFrame:
+        sendResponseTriggers = True
+        
+    if currentFrame<nFrames:
+        saveData.append([phaseN,blockID,currentFrame,laserRotation,
+            shieldRotation,shieldDegrees,currentHit,totalReward,
+            sendTrigger,triggerValue,trueMean,trueVariance,volatility,
+            toneTrigger,toneVolatility])
+        currentFrame = currentFrame + 1;
+    else:
+        triggerValue = 99
+        sendTrigger = True
+        send_trigger(triggerValue)
+        #win.callOnFlip(trialTrigger.setData, int(triggerValue))
+    
+    pc_orientation = pc_orientation + (360/nFrames)/2;
+    pc_degrees = pc_degrees + (360/nFrames)/2;
+    pc_X=np.sin(np.arange(np.radians(-pc_degrees),np.radians(pc_degrees),np.radians(10)/20))*CIRCLE_RADIUS*1.1;
+    pc_Y=np.cos(np.arange(np.radians(-pc_degrees),np.radians(pc_degrees),np.radians(10)/20))*CIRCLE_RADIUS*1.1;
+    pc_X = np.concatenate(([0],pc_X));
+    pc_Y = np.concatenate(([0],pc_Y));
+    pc_coords = np.transpose(np.vstack((pc_X,pc_Y)));
+    
+    # *harmless_area_practice* updates
+    if harmless_area_practice.status == NOT_STARTED and frameN >= 0:
+        # keep track of start time/frame for later
+        harmless_area_practice.frameNStart = frameN  # exact frame index
+        harmless_area_practice.tStart = t  # local t and not account for scr refresh
+        harmless_area_practice.tStartRefresh = tThisFlipGlobal  # on global time
+        win.timeOnFlip(harmless_area_practice, 'tStartRefresh')  # time at next scr refresh
+        harmless_area_practice.setAutoDraw(True)
+    if harmless_area_practice.status == STARTED:
+        if frameN >= (harmless_area_practice.frameNStart + nFrames):
+            # keep track of stop time/frame for later
+            harmless_area_practice.tStop = t  # not accounting for scr refresh
+            harmless_area_practice.frameNStop = frameN  # exact frame index
+            win.timeOnFlip(harmless_area_practice, 'tStopRefresh')  # time at next scr refresh
+            harmless_area_practice.setAutoDraw(False)
+    
+    # *shield_practice* updates
+    if shield_practice.status == NOT_STARTED and frameN >= 0:
+        # keep track of start time/frame for later
+        shield_practice.frameNStart = frameN  # exact frame index
+        shield_practice.tStart = t  # local t and not account for scr refresh
+        shield_practice.tStartRefresh = tThisFlipGlobal  # on global time
+        win.timeOnFlip(shield_practice, 'tStartRefresh')  # time at next scr refresh
+        shield_practice.setAutoDraw(True)
+    if shield_practice.status == STARTED:
+        if frameN >= (shield_practice.frameNStart + nFrames):
+            # keep track of stop time/frame for later
+            shield_practice.tStop = t  # not accounting for scr refresh
+            shield_practice.frameNStop = frameN  # exact frame index
+            win.timeOnFlip(shield_practice, 'tStopRefresh')  # time at next scr refresh
+            shield_practice.setAutoDraw(False)
+    if shield_practice.status == STARTED:  # only update if drawing
+        shield_practice.setFillColor(shieldColour, log=False)
+        shield_practice.setOri(shieldRotation, log=False)
+        shield_practice.setVertices(shieldCoords, log=False)
+        shield_practice.setLineColor([0, 0, 0], log=False)
+    
+    # *shield_centre_practice* updates
+    if shield_centre_practice.status == NOT_STARTED and frameN >= 0:
+        # keep track of start time/frame for later
+        shield_centre_practice.frameNStart = frameN  # exact frame index
+        shield_centre_practice.tStart = t  # local t and not account for scr refresh
+        shield_centre_practice.tStartRefresh = tThisFlipGlobal  # on global time
+        win.timeOnFlip(shield_centre_practice, 'tStartRefresh')  # time at next scr refresh
+        shield_centre_practice.setAutoDraw(True)
+    if shield_centre_practice.status == STARTED:
+        if frameN >= (shield_centre_practice.frameNStart + nFrames):
+            # keep track of stop time/frame for later
+            shield_centre_practice.tStop = t  # not accounting for scr refresh
+            shield_centre_practice.frameNStop = frameN  # exact frame index
+            win.timeOnFlip(shield_centre_practice, 'tStopRefresh')  # time at next scr refresh
+            shield_centre_practice.setAutoDraw(False)
+    if shield_centre_practice.status == STARTED:  # only update if drawing
+        shield_centre_practice.setPos((0, 0), log=False)
+        shield_centre_practice.setOri(shieldRotation, log=False)
+    
+    # *shield_bg_short_practice* updates
+    if shield_bg_short_practice.status == NOT_STARTED and frameN >= 0:
+        # keep track of start time/frame for later
+        shield_bg_short_practice.frameNStart = frameN  # exact frame index
+        shield_bg_short_practice.tStart = t  # local t and not account for scr refresh
+        shield_bg_short_practice.tStartRefresh = tThisFlipGlobal  # on global time
+        win.timeOnFlip(shield_bg_short_practice, 'tStartRefresh')  # time at next scr refresh
+        shield_bg_short_practice.setAutoDraw(True)
+    if shield_bg_short_practice.status == STARTED:
+        if frameN >= (shield_bg_short_practice.frameNStart + nFrames):
+            # keep track of stop time/frame for later
+            shield_bg_short_practice.tStop = t  # not accounting for scr refresh
+            shield_bg_short_practice.frameNStop = frameN  # exact frame index
+            win.timeOnFlip(shield_bg_short_practice, 'tStopRefresh')  # time at next scr refresh
+            shield_bg_short_practice.setAutoDraw(False)
+    if shield_bg_short_practice.status == STARTED:  # only update if drawing
+        shield_bg_short_practice.setFillColor([0, 0, 0], log=False)
+        shield_bg_short_practice.setOri(shieldRotation, log=False)
+        shield_bg_short_practice.setVertices(shieldCoords, log=False)
+        shield_bg_short_practice.setLineColor([0, 0, 0], log=False)
+    
+    # *laser_practice* updates
+    if laser_practice.status == NOT_STARTED and tThisFlip >= 0.0-frameTolerance:
+        # keep track of start time/frame for later
+        laser_practice.frameNStart = frameN  # exact frame index
+        laser_practice.tStart = t  # local t and not account for scr refresh
+        laser_practice.tStartRefresh = tThisFlipGlobal  # on global time
+        win.timeOnFlip(laser_practice, 'tStartRefresh')  # time at next scr refresh
+        laser_practice.setAutoDraw(True)
+    if laser_practice.status == STARTED:
+        if frameN >= (laser_practice.frameNStart + nFrames):
+            # keep track of stop time/frame for later
+            laser_practice.tStop = t  # not accounting for scr refresh
+            laser_practice.frameNStop = frameN  # exact frame index
+            win.timeOnFlip(laser_practice, 'tStopRefresh')  # time at next scr refresh
+            laser_practice.setAutoDraw(False)
+    if laser_practice.status == STARTED:  # only update if drawing
+        laser_practice.setOri(laserRotation, log=False)
+        laser_practice.setVertices([[0, 0], [0, CIRCLE_RADIUS*1.1]], log=False)
+    
+    # *laser_long_practice* updates
+    if laser_long_practice.status == NOT_STARTED and tThisFlip >= 0.0-frameTolerance:
+        # keep track of start time/frame for later
+        laser_long_practice.frameNStart = frameN  # exact frame index
+        laser_long_practice.tStart = t  # local t and not account for scr refresh
+        laser_long_practice.tStartRefresh = tThisFlipGlobal  # on global time
+        win.timeOnFlip(laser_long_practice, 'tStartRefresh')  # time at next scr refresh
+        laser_long_practice.setAutoDraw(True)
+    if laser_long_practice.status == STARTED:
+        if frameN >= (laser_long_practice.frameNStart + nFrames):
+            # keep track of stop time/frame for later
+            laser_long_practice.tStop = t  # not accounting for scr refresh
+            laser_long_practice.frameNStop = frameN  # exact frame index
+            win.timeOnFlip(laser_long_practice, 'tStopRefresh')  # time at next scr refresh
+            laser_long_practice.setAutoDraw(False)
+    if laser_long_practice.status == STARTED:  # only update if drawing
+        laser_long_practice.setOpacity(laser_long_opacity, log=False)
+        laser_long_practice.setOri(laserRotation, log=False)
+        laser_long_practice.setVertices([[0, 0], [0, CIRCLE_RADIUS*1.4]], log=False)
+    
+    # *progress_bar_practice* updates
+    if progress_bar_practice.status == NOT_STARTED and frameN >= 0:
+        # keep track of start time/frame for later
+        progress_bar_practice.frameNStart = frameN  # exact frame index
+        progress_bar_practice.tStart = t  # local t and not account for scr refresh
+        progress_bar_practice.tStartRefresh = tThisFlipGlobal  # on global time
+        win.timeOnFlip(progress_bar_practice, 'tStartRefresh')  # time at next scr refresh
+        progress_bar_practice.setAutoDraw(True)
+    if progress_bar_practice.status == STARTED:
+        if frameN >= (progress_bar_practice.frameNStart + nFrames):
+            # keep track of stop time/frame for later
+            progress_bar_practice.tStop = t  # not accounting for scr refresh
+            progress_bar_practice.frameNStop = frameN  # exact frame index
+            win.timeOnFlip(progress_bar_practice, 'tStopRefresh')  # time at next scr refresh
+            progress_bar_practice.setAutoDraw(False)
+    if progress_bar_practice.status == STARTED:  # only update if drawing
+        progress_bar_practice.setOri(pc_orientation, log=False)
+        progress_bar_practice.setVertices(pc_coords, log=False)
+    
+    # *radioactive_practice* updates
+    if radioactive_practice.status == NOT_STARTED and frameN >= 0:
+        # keep track of start time/frame for later
+        radioactive_practice.frameNStart = frameN  # exact frame index
+        radioactive_practice.tStart = t  # local t and not account for scr refresh
+        radioactive_practice.tStartRefresh = tThisFlipGlobal  # on global time
+        win.timeOnFlip(radioactive_practice, 'tStartRefresh')  # time at next scr refresh
+        radioactive_practice.setAutoDraw(True)
+    if radioactive_practice.status == STARTED:
+        if frameN >= (radioactive_practice.frameNStart + nFrames):
+            # keep track of stop time/frame for later
+            radioactive_practice.tStop = t  # not accounting for scr refresh
+            radioactive_practice.frameNStop = frameN  # exact frame index
+            win.timeOnFlip(radioactive_practice, 'tStopRefresh')  # time at next scr refresh
+            radioactive_practice.setAutoDraw(False)
+    
+    # check for quit (typically the Esc key)
+    if endExpNow or defaultKeyboard.getKeys(keyList=["escape"]):
+        core.quit()
+    
+    # check if all components have finished
+    if not continueRoutine:  # a component has requested a forced-end of Routine
+        break
+    continueRoutine = False  # will revert to True if at least one component still running
+    for thisComponent in practiceBlockComponents:
+        if hasattr(thisComponent, "status") and thisComponent.status != FINISHED:
+            continueRoutine = True
+            break  # at least one component has not yet finished
+    
+    # refresh the screen
+    if continueRoutine:  # don't flip if this routine is over or we'll get a blank screen
+        win.flip()
+
+# -------Ending Routine "practiceBlock"-------
+for thisComponent in practiceBlockComponents:
+    if hasattr(thisComponent, "setAutoDraw"):
+        thisComponent.setAutoDraw(False)
+totalReward_tot = totalReward_tot + totalReward
+totalReward_text = "£%.2f" %(totalReward)
+
+# save the output data for this block
+np.savetxt(saveFilename,saveData,delimiter=",",fmt="%s")
+#win.callOnFlip(trialTrigger.setData, int(0))
+triggerValue = 0
+send_trigger(triggerValue)
+sendTrigger = False
+thisExp.addData('harmless_area_practice.started', harmless_area_practice.tStartRefresh)
+thisExp.addData('harmless_area_practice.stopped', harmless_area_practice.tStopRefresh)
+thisExp.addData('shield_practice.started', shield_practice.tStartRefresh)
+thisExp.addData('shield_practice.stopped', shield_practice.tStopRefresh)
+thisExp.addData('shield_centre_practice.started', shield_centre_practice.tStartRefresh)
+thisExp.addData('shield_centre_practice.stopped', shield_centre_practice.tStopRefresh)
+thisExp.addData('shield_bg_short_practice.started', shield_bg_short_practice.tStartRefresh)
+thisExp.addData('shield_bg_short_practice.stopped', shield_bg_short_practice.tStopRefresh)
+thisExp.addData('laser_practice.started', laser_practice.tStartRefresh)
+thisExp.addData('laser_practice.stopped', laser_practice.tStopRefresh)
+thisExp.addData('laser_long_practice.started', laser_long_practice.tStartRefresh)
+thisExp.addData('laser_long_practice.stopped', laser_long_practice.tStopRefresh)
+thisExp.addData('progress_bar_practice.started', progress_bar_practice.tStartRefresh)
+thisExp.addData('progress_bar_practice.stopped', progress_bar_practice.tStopRefresh)
+thisExp.addData('radioactive_practice.started', radioactive_practice.tStartRefresh)
+thisExp.addData('radioactive_practice.stopped', radioactive_practice.tStopRefresh)
+# the Routine "practiceBlock" was not non-slip safe, so reset the non-slip timer
+routineTimer.reset()
+
 # ------Prepare to start Routine "instructions_mainTask"-------
 continueRoutine = True
 # update component parameters for each repeat
@@ -1198,8 +1709,7 @@ for thisBlock in blocks:
     continueRoutine = True
     # update component parameters for each repeat
     #determine radioactive source image
-    rootdir = os.getcwd()
-    sourceImageFile = os.path.join(rootdir,'images',sourceImage)
+    sourceImageFile = os.path.join(imageRoot,sourceImage)
     radioactive_block_source.setImage(sourceImageFile)
     key_resp_blockStart.keys = []
     key_resp_blockStart.rt = []
@@ -1307,18 +1817,8 @@ for thisBlock in blocks:
     # ------Prepare to start Routine "trial"-------
     continueRoutine = True
     # update component parameters for each repeat
-    #initialise variables that will be updated as experiment progresses
-    shieldDegrees = 20; #because it needs to be predefined
-    
-    shieldWidth = np.sin(np.radians(shieldDegrees))*CIRCLE_RADIUS*1.5;
-    shieldHeight = np.cos(np.radians(shieldDegrees))*CIRCLE_RADIUS*1.5;
-    
-    #calculate the screen X and Y locations that correspond to the shield centre
-    shieldX=np.sin(np.arange(np.radians(-shieldDegrees),np.radians(shieldDegrees),np.radians(shieldDegrees)/20))*CIRCLE_RADIUS*1.1;
-    shieldY=np.cos(np.arange(np.radians(-shieldDegrees),np.radians(shieldDegrees),np.radians(shieldDegrees)/20))*CIRCLE_RADIUS*1.1;
-    shieldX = np.concatenate(([0],shieldX));
-    shieldY = np.concatenate(([0],shieldY));
-    shieldCoords = np.transpose(np.vstack((shieldX,shieldY)))
+    # this is the actual experiment
+    phaseN = 1
     
     #load stimulusStream into NumPy array
     block_path = sequenceRoot + blockFileName
@@ -1328,17 +1828,8 @@ for thisBlock in blocks:
         words = line.split(',')
         storedStream_np.append((words[0], words[1], words[2]))
         
-    #load stimulusStream into NumPy array
-    #rootdir = os.getcwd()
-    #stimStreamPath = os.path.join(rootdir,'sequences',blockFileName)
-    #storedStream_np = np.loadtxt(stimStreamPath,delimiter=",")
-    
-    shieldRotation = 360 #begin at top
-    
-    #calculate the total number of frames in the experiment
+    #calculate the total number of frames in this block
     nFrames = len(storedStream_np) - 2 # try debug IndexError:list index out of range
-    #nFrames = len(storedStream_np) - 1; # equivalent to np.shape
-    #nFrames = np.shape(storedStream_np)[0] - 1;
     currentFrame = 0
     
     #the ValueError: could not convert string to float error originates here
@@ -1350,14 +1841,7 @@ for thisBlock in blocks:
     laserRotation = float(storedStream_np[0][1])
     trueVariance = float(storedStream_np[0][2])
     
-    #laserRotation = storedStream_np[0,1];
-    #trueMean = storedStream_np[0,0];
-    #trueVariance = storedStream_np[0,2];
-    
-    #update variables to draw polygon
-    laserXcoord = CIRCLE_RADIUS*cos(deg2rad(laserRotation));
-    laserYcoord = CIRCLE_RADIUS*sin(deg2rad(laserRotation));
-    
+    #initialise variables that will be updated as experiment progresses
     hit_i = 0
     first_hit = 0
     
@@ -1365,8 +1849,24 @@ for thisBlock in blocks:
     sendTrigger = True
     #start by sending a trigger when subject presses a button
     sendResponseTriggers = True
-    
     totalReward = 1;
+    
+    shieldDegrees = 20; #because it needs to be predefined
+    shieldRotation = 360 #begin at top
+    
+    shieldWidth = np.sin(np.radians(shieldDegrees))*CIRCLE_RADIUS*1.5;
+    shieldHeight = np.cos(np.radians(shieldDegrees))*CIRCLE_RADIUS*1.5;
+    
+    #calculate the screen X and Y locations that correspond to the shield centre
+    shieldX=np.sin(np.arange(np.radians(-shieldDegrees),np.radians(shieldDegrees),np.radians(shieldDegrees)/20))*CIRCLE_RADIUS*1.1;
+    shieldY=np.cos(np.arange(np.radians(-shieldDegrees),np.radians(shieldDegrees),np.radians(shieldDegrees)/20))*CIRCLE_RADIUS*1.1;
+    shieldX = np.concatenate(([0],shieldX));
+    shieldY = np.concatenate(([0],shieldY));
+    shieldCoords = np.transpose(np.vstack((shieldX,shieldY)))
+    
+    #update variables to draw polygon
+    laserXcoord = CIRCLE_RADIUS*cos(deg2rad(laserRotation));
+    laserYcoord = CIRCLE_RADIUS*sin(deg2rad(laserRotation));
     
     unique, counts = np.unique(storedStream_np, return_counts=True);
     laser_on = min(counts);
@@ -1546,7 +2046,10 @@ for thisBlock in blocks:
             sendResponseTriggers = True
             
         if currentFrame<nFrames:
-            saveData.append([blockID,currentFrame,laserRotation,shieldRotation,shieldDegrees,currentHit,totalReward,sendTrigger,triggerValue,trueMean,trueVariance,volatility])
+            saveData.append([phaseN,blockID,currentFrame,laserRotation,
+            shieldRotation,shieldDegrees,currentHit,totalReward,
+            sendTrigger,triggerValue,trueMean,trueVariance,volatility,
+            toneTrigger,toneVolatility])
             currentFrame = currentFrame + 1;
         else:
             triggerValue = 99
