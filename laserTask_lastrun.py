@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 This experiment was created using PsychoPy3 Experiment Builder (v2022.1.2),
-    on Fri 09 Jun 2023 20:42:37 
+    on Fri 09 Jun 2023 22:49:26 
 If you publish work using this script the most relevant publication is:
 
     Peirce J, Gray JR, Simpson S, MacAskill M, Höchenberger R, Sogo H, Kastman E, Lindeløv JK. (2019) 
@@ -1888,6 +1888,54 @@ for thisBlock in blocks:
     laser_long.setPos((0, 0))
     laser_long.setSize((1, 1))
     radioactive.setImage(sourceImageFile)
+    #initialise some things
+    toneOnsets=[]
+    ISIs=[]
+    
+    # make tone sequence of S and Ds
+    toneFilePath = "sequences/"+toneSeqFileName;
+    
+    #load tone stimuli stream into NumPy array
+    f = open(toneFilePath, 'r');
+    toneStream_np = [];
+    for line in f:
+        tones = line.split(',');
+        toneStream_np.append(tones[0].strip());
+    
+    toneIndex = 1 # reset toneIndex to 0 every block
+    #print(toneStream_np)
+    
+    # current tone 
+    toneCurr = toneStream_np[toneIndex]
+    if toneCurr == "1":
+        lastTone = 1
+    else:
+        lastTone = 2
+    
+    # define the two tones
+    global tone1
+    global tone2
+    tone1 = sound.Sound(440, secs=0.05, stereo=True, hamming=True,
+            syncToWin=True,  name='sound_short')
+    tone1.setVolume(1)
+    tone2 = sound.Sound(440, secs=0.1, stereo=True, hamming=True,
+           syncToWin=True, name='sound_long')
+    tone2.setVolume(1)
+    
+    # ISIs corresponding to tones, in frames
+    # isi = soa - toneDuration
+    # isi1 = 450-100 *60/1000
+    isi1 = 24
+    # isi2 = 450-500 *60/1000
+    isi2 = 21
+     
+    # start with no tone and no ISI
+    toneIsPlaying = False
+    toneIsWaiting = False
+    toneTrig = 0
+    
+    # start with frame 0
+    iFrame = 0
     # keep track of which components have finished
     trialComponents = [harmless_area, shield, shield_centre, shield_bg_short, laser, laser_long, progress_bar, radioactive]
     for thisComponent in trialComponents:
@@ -2049,7 +2097,7 @@ for thisBlock in blocks:
             saveData.append([phaseN,blockID,currentFrame,laserRotation,
             shieldRotation,shieldDegrees,currentHit,totalReward,
             sendTrigger,triggerValue,trueMean,trueVariance,volatility,
-            toneTrigger,toneVolatility])
+            toneTrig,toneVolatility])
             currentFrame = currentFrame + 1;
         else:
             triggerValue = 99
@@ -2215,6 +2263,60 @@ for thisBlock in blocks:
                 radioactive.frameNStop = frameN  # exact frame index
                 win.timeOnFlip(radioactive, 'tStopRefresh')  # time at next scr refresh
                 radioactive.setAutoDraw(False)
+        # we want to present the tone every
+        # X seconds for the duration of the trial
+        # if the sound is not currently playing
+        
+        if phaseN > 0:
+            iFrame = iFrame +1
+            if not toneIsPlaying and not toneIsWaiting:
+                # pick how long we will wait for
+                if lastTone == 1:
+                    thisISI = isi1 # this is in frames
+                else:
+                    thisISI = isi2
+                #print('thisISI', thisISI)
+                ISIs.append(thisISI)
+                thisOnset = iFrame +thisISI
+                #we are waiting for the sound to play
+                toneIsWaiting = True
+                toneTrig = 0
+            elif not toneIsPlaying and toneIsWaiting:
+                if iFrame >= thisOnset:
+                    #getTone()
+                    print('playing')
+                    if toneCurr == "1":
+                        tone1.play()
+                        toneTrig = triggers['tone_1']
+                        lastTone = 1
+                    elif toneCurr == "2":
+                        tone2.play()
+                        toneTrig = triggers['tone_2']
+                        lastTone = 2
+                    toneOnsets.append(iFrame)
+                    send_trigger(toneTrig)
+                    toneIsPlaying = True
+                    toneIsWaiting = False
+            elif toneIsPlaying:
+                toneTrig = 0
+                if toneCurr == "1":
+                    if iFrame >= thisOnset + tone1.secs*screen_refreshRate +3:
+                        toneIndex += 1
+                        toneCurr = toneStream_np[toneIndex]
+                        tone1.stop()
+                        toneIsPlaying = False
+                elif toneCurr == "2":
+                    if iFrame >= thisOnset + tone2.secs*screen_refreshRate +3:
+                        toneIndex += 1
+                        toneCurr = toneStream_np[toneIndex]
+                        tone2.stop()
+                        toneIsPlaying = False
+        
+            # end the routine if the trial duration has been reached
+            if currentFrame > nFrames:
+                toneIsPlaying = False
+                toneIsWaiting = False
+                continueRoutine = False
         
         # check for quit (typically the Esc key)
         if endExpNow or defaultKeyboard.getKeys(keyList=["escape"]):
