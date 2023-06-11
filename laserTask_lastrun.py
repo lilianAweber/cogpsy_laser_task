@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 This experiment was created using PsychoPy3 Experiment Builder (v2022.1.2),
-    on Fri 09 Jun 2023 22:49:26 
+    on Sun 11 Jun 2023 21:14:45 
 If you publish work using this script the most relevant publication is:
 
     Peirce J, Gray JR, Simpson S, MacAskill M, Höchenberger R, Sogo H, Kastman E, Lindeløv JK. (2019) 
@@ -63,8 +63,8 @@ frameTolerance = 0.001  # how close to onset before 'same' frame
 
 # Setup the Window
 win = visual.Window(
-    size=[1366, 768], fullscr=True, screen=0, 
-    winType='pyglet', allowGUI=False, allowStencil=False,
+    size=[1366, 768], fullscr=False, screen=0, 
+    winType='pyglet', allowGUI=True, allowStencil=False,
     monitor='testMonitor', color=[0,0,0], colorSpace='rgb',
     blendMode='avg', useFBO=True, 
     units='height')
@@ -134,7 +134,7 @@ sessionFileName = (sequenceRoot + "cogpsy_main_v1_order"
 saveData = [["phase","blockID","currentFrame","laserRotation",
     "shieldRotation","shieldDegrees","currentHit","totalReward",
     "sendTrigger","triggerValue","trueMean","trueVariance",
-    "volatility","toneTrigger","toneVolatility"]];
+    "volatility","toneTrigger","toneVolatility","toneIndex","toneEndFrame"]];
 saveFilename = (dataRoot + "sub-" + str(expInfo['participant']) + 
     "_task-laser.csv")
     
@@ -1027,6 +1027,8 @@ volatility = 2
 # we do not present any tones in this block
 toneTrigger = 0
 toneVolatility = 0
+toneIndex = 0
+toneEndFrame = 0
 
 #load stimulusStream into NumPy array
 block_path = sequenceRoot + "practice_v1_block1.csv"
@@ -1256,7 +1258,7 @@ while continueRoutine:
         saveData.append([phaseN,blockID,currentFrame,laserRotation,
             shieldRotation,shieldDegrees,currentHit,totalReward,
             sendTrigger,triggerValue,trueMean,trueVariance,volatility,
-            toneTrigger,toneVolatility])
+            toneTrigger,toneVolatility,toneIndex,toneEndFrame])
         currentFrame = currentFrame + 1;
     else:
         triggerValue = 99
@@ -1902,8 +1904,10 @@ for thisBlock in blocks:
         tones = line.split(',');
         toneStream_np.append(tones[0].strip());
     
-    toneIndex = 1 # reset toneIndex to 0 every block
-    #print(toneStream_np)
+    #  tone entry 0 is variable name, start at 1
+    toneIndex = 1
+    nTones = len(toneStream_np)-1
+    toneEndFrame = 0
     
     # current tone 
     toneCurr = toneStream_np[toneIndex]
@@ -2097,7 +2101,7 @@ for thisBlock in blocks:
             saveData.append([phaseN,blockID,currentFrame,laserRotation,
             shieldRotation,shieldDegrees,currentHit,totalReward,
             sendTrigger,triggerValue,trueMean,trueVariance,volatility,
-            toneTrig,toneVolatility])
+            toneTrig,toneVolatility,toneIndex,toneEndFrame])
             currentFrame = currentFrame + 1;
         else:
             triggerValue = 99
@@ -2272,9 +2276,12 @@ for thisBlock in blocks:
             if not toneIsPlaying and not toneIsWaiting:
                 # pick how long we will wait for
                 if lastTone == 1:
-                    thisISI = isi1 # this is in frames
+                    thisISI = isi1-2 
+                    # this is in frames
+                    # we correct for 2 frames as wait a little longer
+                    # before stopping the tone (see below)
                 else:
-                    thisISI = isi2
+                    thisISI = isi2-2
                 #print('thisISI', thisISI)
                 ISIs.append(thisISI)
                 thisOnset = iFrame +thisISI
@@ -2300,17 +2307,32 @@ for thisBlock in blocks:
             elif toneIsPlaying:
                 toneTrig = 0
                 if toneCurr == "1":
-                    if iFrame >= thisOnset + tone1.secs*screen_refreshRate +3:
-                        toneIndex += 1
-                        toneCurr = toneStream_np[toneIndex]
-                        tone1.stop()
-                        toneIsPlaying = False
+                    if iFrame >= thisOnset + tone1.secs*screen_refreshRate +1:
+                        toneEndFrame = iFrame
+                        if toneIndex < nTones:
+                            toneIndex += 1
+                            print('tone number:')
+                            print(toneIndex)
+                            toneCurr = toneStream_np[toneIndex]
+                            tone1.stop()
+                            toneIsPlaying = False
+                        else:
+                            # we have reached the end of the tone list
+                            tone1.stop()
+                            continueRoutine = False
                 elif toneCurr == "2":
-                    if iFrame >= thisOnset + tone2.secs*screen_refreshRate +3:
-                        toneIndex += 1
-                        toneCurr = toneStream_np[toneIndex]
-                        tone2.stop()
-                        toneIsPlaying = False
+                    if iFrame >= thisOnset + tone2.secs*screen_refreshRate +1:
+                        toneEndFrame = iFrame
+                        if toneIndex < nTones:
+                            toneIndex += 1
+                            print('tone number:')
+                            print(toneIndex)
+                            toneCurr = toneStream_np[toneIndex]
+                            tone2.stop()
+                            toneIsPlaying = False
+                        else:
+                            tone2.stop()
+                            continueRoutine = False
         
             # end the routine if the trial duration has been reached
             if currentFrame > nFrames:
