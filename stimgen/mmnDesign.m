@@ -2,9 +2,9 @@ function design = mmnDesign( condition, deviantProbability )
 %MMNDESIGN Defines a duration mismatch paradigm with switching
 %standard/deviant roles and 3 possible deviant probabilities
 
-design.tonePitch = 500; % in Hz
+design.tonePitch = 440; % in Hz
 design.toneDuration1 = 50; % in ms
-design.toneDuration2 = 125; % in ms
+design.toneDuration2 = 100; % in ms
 design.soaDuration = 450; % in ms
 design.isiDuration1 = design.soaDuration - design.toneDuration1; % in ms
 design.isiDuration2 = design.soaDuration - design.toneDuration2; % in ms
