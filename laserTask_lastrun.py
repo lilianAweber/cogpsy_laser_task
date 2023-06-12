@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 This experiment was created using PsychoPy3 Experiment Builder (v2022.1.2),
-    on Mon 12 Jun 2023 11:49:34 
+    on Mon 12 Jun 2023 22:42:20 
 If you publish work using this script the most relevant publication is:
 
     Peirce J, Gray JR, Simpson S, MacAskill M, Höchenberger R, Sogo H, Kastman E, Lindeløv JK. (2019) 
@@ -35,7 +35,7 @@ os.chdir(_thisDir)
 # Store info about the experiment session
 psychopyVersion = '2022.1.2'
 expName = 'SaveTheWorld'  # from the Builder filename that created this script
-expInfo = {'participant': '000', 'order': '1'}
+expInfo = {'participant': '000', 'session': '00', 'order': '1'}
 dlg = gui.DlgFromDict(dictionary=expInfo, sortKeys=False, title=expName)
 if dlg.OK == False:
     core.quit()  # user pressed cancel
@@ -63,8 +63,8 @@ frameTolerance = 0.001  # how close to onset before 'same' frame
 
 # Setup the Window
 win = visual.Window(
-    size=[1366, 768], fullscr=False, screen=0, 
-    winType='pyglet', allowGUI=True, allowStencil=False,
+    size=[1366, 768], fullscr=True, screen=0, 
+    winType='pyglet', allowGUI=False, allowStencil=False,
     monitor='testMonitor', color=[0,0,0], colorSpace='rgb',
     blendMode='avg', useFBO=True, 
     units='height')
@@ -137,48 +137,50 @@ saveData = [["phase","blockID","currentFrame","laserRotation",
     "sendTrigger","triggerValue","trueMean","trueVariance",
     "volatility","toneTrigger","toneVolatility","toneIndex","toneEndFrame"]];
 saveFilename = (dataRoot + "sub-" + str(expInfo['participant']) + 
-    "_task-laser.csv")
+    "ses-" + str(expInfo['session']) + "_task-laser.csv")
     
-#initialise list containing data to be saved
-#saveData = [["blockID","currentFrame","laserRotation",
-#    "shieldRotation","shieldDegrees","currentHit","totalReward",
-#    "sendTrigger","triggerValue","trueMean","trueVariance",
-#    "volatility"]]
-#saveFilename = "savedData_" + str(expInfo['participant']) + ".csv" 
-
 # hide the mouse
 win.mouseVisible = False
 
 # keyboard constants
 kb = keyboard.Keyboard()
-keys_move = ['2', '1'];
-key_right = '2';
-key_left = '1';
+keys_move = ['2', '1']
+key_right = '2'
+key_left = '1'
 
 # set constants for the experiment
 screen_refreshRate = win.getActualFrameRate()
-ROTATION_SPEED = 1;
-CIRCLE_RADIUS = 3;
+ROTATION_SPEED = 1
+CIRCLE_RADIUS = 3
 
 # initialise variables that will be updated as experiment progresses
 # shield variables
-shieldDegrees = 40; #because it needs to be predefined
-shieldWidth = np.sin(np.radians(shieldDegrees))*CIRCLE_RADIUS*1.5;
-shieldHeight = np.cos(np.radians(shieldDegrees))*CIRCLE_RADIUS*1.5;
+shieldDegrees = 40 #because it needs to be predefined
+shieldWidth = np.sin(np.radians(shieldDegrees))*CIRCLE_RADIUS*1.5
+shieldHeight = np.cos(np.radians(shieldDegrees))*CIRCLE_RADIUS*1.5
 
 #calculate the screen X and Y locations that correspond to the shield centre
-shieldX = np.sin(np.arange(np.radians(-shieldDegrees),np.radians(shieldDegrees),np.radians(shieldDegrees)/20))*CIRCLE_RADIUS*1.1;
-shieldY = np.cos(np.arange(np.radians(-shieldDegrees),np.radians(shieldDegrees),np.radians(shieldDegrees)/20))*CIRCLE_RADIUS*1.1;
-shieldX = np.concatenate(([0],shieldX));
-shieldY = np.concatenate(([0],shieldY));
+shieldX = np.sin(np.arange(np.radians(-shieldDegrees),np.radians(shieldDegrees),np.radians(shieldDegrees)/20))*CIRCLE_RADIUS*1.1
+shieldY = np.cos(np.arange(np.radians(-shieldDegrees),np.radians(shieldDegrees),np.radians(shieldDegrees)/20))*CIRCLE_RADIUS*1.1
+shieldX = np.concatenate(([0],shieldX))
+shieldY = np.concatenate(([0],shieldY))
 shieldCoords = np.transpose(np.vstack((shieldX,shieldY)))
 
 shieldRotation = 360; #begin at top
 
 #reward variables
-totalReward_tot = 0;
-lossFactor = 0.003;
-totalReward_text = '';
+totalReward_tot = 0
+lossFactor = 0.003
+totalReward_text = ''
+
+# reward bar variables
+red_bar_length = 0
+red_bar_length = 0
+bar_length = 0.5
+reward_change_colour = [1, -1, -1]
+top_amount_text = ''
+bottom_amount_text = ''
+#lossFactor = 0.003
 
 #progress circle variables
 pc_orientation = 0;
@@ -190,21 +192,6 @@ pc_Y = np.concatenate(([0],pc_Y));
 pc_coords = np.transpose(np.vstack((pc_X,pc_Y)))
 
 hgf = 0;
-
-#initialise variables that will be updated as experiment progresses
-# needed??
-# block start and end texts
-#blockStartTxt = "block 1 out of 4"
-#instructed training variables
-#training_loop_count = -1
-#target_orientation = 0
-#reward variables
-red_bar_length = 0
-#bar_length = 0.5
-#bar_position = -0.05
-#totalReward_tot = 0
-#reward_change_colour = [1, -1, -1]
-#totalReward_text = ''
 
 # triggers
 triggers = dict(
@@ -378,6 +365,18 @@ progress_bar_practice = visual.ShapeStim(
     ori=1.0, pos=(0, 0), anchor='center',
     lineWidth=10.0,     colorSpace='rgb',  lineColor='green', fillColor='white',
     opacity=None, depth=-7.0, interpolate=True)
+reward_bar_red = visual.Rect(
+    win=win, name='reward_bar_red',
+    width=[1.0, 1.0][0], height=[1.0, 1.0][1],
+    ori=0.0, pos=[0,0], anchor='bottom-center',
+    lineWidth=1.0,     colorSpace='rgb',  lineColor='white', fillColor='white',
+    opacity=None, depth=-8.0, interpolate=True)
+reward_bar = visual.Rect(
+    win=win, name='reward_bar',
+    width=[1.0, 1.0][0], height=[1.0, 1.0][1],
+    ori=0.0, pos=(0.6, -0.3), anchor='bottom-center',
+    lineWidth=1.0,     colorSpace='rgb',  lineColor='blue', fillColor='blue',
+    opacity=None, depth=-9.0, interpolate=True)
 radioactive_practice = visual.ImageStim(
     win=win,
     name='radioactive_practice', units='cm', 
@@ -385,7 +384,21 @@ radioactive_practice = visual.ImageStim(
     ori=0.0, pos=(0, 0), size=(2, 2),
     color=[1, 1, 1], colorSpace='rgb', opacity=None,
     flipHoriz=False, flipVert=False,
-    texRes=128.0, interpolate=True, depth=-8.0)
+    texRes=128.0, interpolate=True, depth=-10.0)
+reward_text_top = visual.TextStim(win=win, name='reward_text_top',
+    text='',
+    font='Open Sans',
+    pos=(0.6, 0.25), height=0.05, wrapWidth=None, ori=0.0, 
+    color='white', colorSpace='rgb', opacity=None, 
+    languageStyle='LTR',
+    depth=-11.0);
+reward_text_bottom = visual.TextStim(win=win, name='reward_text_bottom',
+    text='',
+    font='Open Sans',
+    pos=(0.6, -0.35), height=0.05, wrapWidth=None, ori=0.0, 
+    color='white', colorSpace='rgb', opacity=None, 
+    languageStyle='LTR',
+    depth=-12.0);
 
 # Initialize components for Routine "instructions_mainTask"
 instructions_mainTaskClock = core.Clock()
@@ -1065,41 +1078,50 @@ sendTrigger = True
 send_trigger(triggerValue)
 #start by sending a trigger when subject presses a button
 sendResponseTriggers = True
-totalReward = 1;
+totalReward = 1
 hit_i = 0
 first_hit = 0
 
+# reward bar variables
+#bar_length = 0.5
+top_amount = 1
+bottom_amount = 0.8
+#reward_change_colour = [1, -1, -1]
+top_amount_text = "£%.2f" %(top_amount)
+bottom_amount_text = "£%.2f" %(bottom_amount)
+
+# shield position
 shieldRotation = 360 #begin at top
-shieldDegrees = 20; #because it needs to be predefined
-shieldWidth = np.sin(np.radians(shieldDegrees))*CIRCLE_RADIUS*1.5;
-shieldHeight = np.cos(np.radians(shieldDegrees))*CIRCLE_RADIUS*1.5;
+shieldDegrees = 20
+shieldWidth = np.sin(np.radians(shieldDegrees))*CIRCLE_RADIUS*1.5
+shieldHeight = np.cos(np.radians(shieldDegrees))*CIRCLE_RADIUS*1.5
 
 #calculate the screen X and Y locations that correspond to the shield centre
-shieldX=np.sin(np.arange(np.radians(-shieldDegrees),np.radians(shieldDegrees),np.radians(shieldDegrees)/20))*CIRCLE_RADIUS*1.1;
-shieldY=np.cos(np.arange(np.radians(-shieldDegrees),np.radians(shieldDegrees),np.radians(shieldDegrees)/20))*CIRCLE_RADIUS*1.1;
-shieldX = np.concatenate(([0],shieldX));
-shieldY = np.concatenate(([0],shieldY));
+shieldX=np.sin(np.arange(np.radians(-shieldDegrees),np.radians(shieldDegrees),np.radians(shieldDegrees)/20))*CIRCLE_RADIUS*1.1
+shieldY=np.cos(np.arange(np.radians(-shieldDegrees),np.radians(shieldDegrees),np.radians(shieldDegrees)/20))*CIRCLE_RADIUS*1.1
+shieldX = np.concatenate(([0],shieldX))
+shieldY = np.concatenate(([0],shieldY))
 shieldCoords = np.transpose(np.vstack((shieldX,shieldY)))
 
 #update variables to draw polygon
-laserXcoord = CIRCLE_RADIUS*cos(deg2rad(laserRotation));
-laserYcoord = CIRCLE_RADIUS*sin(deg2rad(laserRotation));
+laserXcoord = CIRCLE_RADIUS*cos(deg2rad(laserRotation))
+laserYcoord = CIRCLE_RADIUS*sin(deg2rad(laserRotation))
 
 # laser variables
-unique, counts = np.unique(storedStream_np, return_counts=True);
-laser_on = min(counts);
-laser_frame_ct = 0;
+unique, counts = np.unique(storedStream_np, return_counts=True)
+laser_on = min(counts)
+laser_frame_ct = 0
 
-laser_practice.setAutoDraw(False);
-laser_long_practice.setAutoDraw(False);
+laser_practice.setAutoDraw(False)
+laser_long_practice.setAutoDraw(False)
 
 #progress circle variables
-pc_orientation = 0;
-pc_degrees = 0;
-pc_X=np.sin(np.arange(np.radians(-pc_degrees),np.radians(pc_degrees),np.radians(10)/20))*CIRCLE_RADIUS*1.1;
-pc_Y=np.cos(np.arange(np.radians(-pc_degrees),np.radians(pc_degrees),np.radians(10)/20))*CIRCLE_RADIUS*1.1;
-pc_X = np.concatenate(([0],pc_X));
-pc_Y = np.concatenate(([0],pc_Y));
+pc_orientation = 0
+pc_degrees = 0
+pc_X=np.sin(np.arange(np.radians(-pc_degrees),np.radians(pc_degrees),np.radians(10)/20))*CIRCLE_RADIUS*1.1
+pc_Y=np.cos(np.arange(np.radians(-pc_degrees),np.radians(pc_degrees),np.radians(10)/20))*CIRCLE_RADIUS*1.1
+pc_X = np.concatenate(([0],pc_X))
+pc_Y = np.concatenate(([0],pc_Y))
 pc_coords = np.transpose(np.vstack((pc_X,pc_Y)))
 laser_practice.setPos((0, 0))
 laser_practice.setSize((1, 1))
@@ -1107,7 +1129,7 @@ laser_long_practice.setPos((0, 0))
 laser_long_practice.setSize((1, 1))
 radioactive_practice.setImage(sourceImageFile)
 # keep track of which components have finished
-practiceBlockComponents = [harmless_area_practice, shield_practice, shield_centre_practice, shield_bg_short_practice, laser_practice, laser_long_practice, progress_bar_practice, radioactive_practice]
+practiceBlockComponents = [harmless_area_practice, shield_practice, shield_centre_practice, shield_bg_short_practice, laser_practice, laser_long_practice, progress_bar_practice, reward_bar_red, reward_bar, radioactive_practice, reward_text_top, reward_text_bottom]
 for thisComponent in practiceBlockComponents:
     thisComponent.tStart = None
     thisComponent.tStop = None
@@ -1136,8 +1158,21 @@ while continueRoutine:
         if first_hit:
             laser_long_practice.setAutoDraw(True)
             
+    # never go to negative reward
     if totalReward <= 0:
-        totalReward = 0.1;
+        totalReward = 0.1
+        top_amount = 0.1
+        bottom_amount = 0.0
+        top_amount_text = "£%.2f" %(top_amount)
+        bottom_amount_text = "£%.2f" %(bottom_amount)
+    
+    # update reward bar if loss was above 0.2
+    if bar_length <= 0:
+        bar_length = 0.5;
+        top_amount = top_amount - 0.2;
+        bottom_amount = bottom_amount - 0.2;
+        top_amount_text = "£%.2f" %(top_amount);
+        bottom_amount_text = "£%.2f" %(bottom_amount);
     
     #do not send a trigger on every frame, only if laser position changes or subject presses a button
     sendTrigger = False
@@ -1219,14 +1254,19 @@ while continueRoutine:
             #win.callOnFlip(trialTrigger.setData, int(triggerValue))
     
         if currentHit:
-            totalReward = totalReward;
-            hit_i = 1;
-            first_hit = 1;
+            totalReward = totalReward
+            red_bar_length = 0
+            hit_i = 1
+            first_hit = 1
         else:
             if totalReward > 0:
-                totalReward = totalReward - lossFactor;
+                totalReward = totalReward - lossFactor
+                bar_length = bar_length - 2.5*lossFactor
+                red_bar_length = 2.5*lossFactor
             else:
-                totalReward = 0;
+                totalReward = 0
+                bar_length = 0.00001
+                red_bar_length = 0
             
     if currentFrame > 0:
         if float(storedStream_np[currentFrame][1]) != float(storedStream_np[currentFrame-1][1]):
@@ -1243,14 +1283,19 @@ while continueRoutine:
                 #win.callOnFlip(trialTrigger.setData, int(triggerValue))
     
             if currentHit:
-                totalReward = totalReward;
-                hit_i = 1;
-                first_hit = 1;
+                totalReward = totalReward
+                red_bar_length = 0
+                hit_i = 1
+                first_hit = 1
             else:
                 if totalReward > 0:
-                    totalReward = totalReward - lossFactor;
+                    totalReward = totalReward - lossFactor
+                    bar_length = bar_length - 2.5*lossFactor
+                    red_bar_length = 2.5*lossFactor
                 else:
-                    totalReward = 0;
+                    totalReward = 0
+                    bar_length = 0.00001
+                    red_bar_length = 0
     
     #update the shieldRedness according to whether we are currently hitting/missing the shield
     if currentHit:
@@ -1418,6 +1463,45 @@ while continueRoutine:
         progress_bar_practice.setOri(pc_orientation, log=False)
         progress_bar_practice.setVertices(pc_coords, log=False)
     
+    # *reward_bar_red* updates
+    if reward_bar_red.status == NOT_STARTED and frameN >= 0:
+        # keep track of start time/frame for later
+        reward_bar_red.frameNStart = frameN  # exact frame index
+        reward_bar_red.tStart = t  # local t and not account for scr refresh
+        reward_bar_red.tStartRefresh = tThisFlipGlobal  # on global time
+        win.timeOnFlip(reward_bar_red, 'tStartRefresh')  # time at next scr refresh
+        reward_bar_red.setAutoDraw(True)
+    if reward_bar_red.status == STARTED:
+        if frameN >= (reward_bar_red.frameNStart + nFrames):
+            # keep track of stop time/frame for later
+            reward_bar_red.tStop = t  # not accounting for scr refresh
+            reward_bar_red.frameNStop = frameN  # exact frame index
+            win.timeOnFlip(reward_bar_red, 'tStopRefresh')  # time at next scr refresh
+            reward_bar_red.setAutoDraw(False)
+    if reward_bar_red.status == STARTED:  # only update if drawing
+        reward_bar_red.setFillColor(reward_change_colour, log=False)
+        reward_bar_red.setPos((0.6, -0.3+bar_length), log=False)
+        reward_bar_red.setSize((0.05, red_bar_length), log=False)
+        reward_bar_red.setLineColor(reward_change_colour, log=False)
+    
+    # *reward_bar* updates
+    if reward_bar.status == NOT_STARTED and frameN >= 0:
+        # keep track of start time/frame for later
+        reward_bar.frameNStart = frameN  # exact frame index
+        reward_bar.tStart = t  # local t and not account for scr refresh
+        reward_bar.tStartRefresh = tThisFlipGlobal  # on global time
+        win.timeOnFlip(reward_bar, 'tStartRefresh')  # time at next scr refresh
+        reward_bar.setAutoDraw(True)
+    if reward_bar.status == STARTED:
+        if frameN >= (reward_bar.frameNStart + nFrames):
+            # keep track of stop time/frame for later
+            reward_bar.tStop = t  # not accounting for scr refresh
+            reward_bar.frameNStop = frameN  # exact frame index
+            win.timeOnFlip(reward_bar, 'tStopRefresh')  # time at next scr refresh
+            reward_bar.setAutoDraw(False)
+    if reward_bar.status == STARTED:  # only update if drawing
+        reward_bar.setSize((0.05, bar_length), log=False)
+    
     # *radioactive_practice* updates
     if radioactive_practice.status == NOT_STARTED and frameN >= 0:
         # keep track of start time/frame for later
@@ -1433,6 +1517,42 @@ while continueRoutine:
             radioactive_practice.frameNStop = frameN  # exact frame index
             win.timeOnFlip(radioactive_practice, 'tStopRefresh')  # time at next scr refresh
             radioactive_practice.setAutoDraw(False)
+    
+    # *reward_text_top* updates
+    if reward_text_top.status == NOT_STARTED and frameN >= 0:
+        # keep track of start time/frame for later
+        reward_text_top.frameNStart = frameN  # exact frame index
+        reward_text_top.tStart = t  # local t and not account for scr refresh
+        reward_text_top.tStartRefresh = tThisFlipGlobal  # on global time
+        win.timeOnFlip(reward_text_top, 'tStartRefresh')  # time at next scr refresh
+        reward_text_top.setAutoDraw(True)
+    if reward_text_top.status == STARTED:
+        if frameN >= (reward_text_top.frameNStart + nFrames):
+            # keep track of stop time/frame for later
+            reward_text_top.tStop = t  # not accounting for scr refresh
+            reward_text_top.frameNStop = frameN  # exact frame index
+            win.timeOnFlip(reward_text_top, 'tStopRefresh')  # time at next scr refresh
+            reward_text_top.setAutoDraw(False)
+    if reward_text_top.status == STARTED:  # only update if drawing
+        reward_text_top.setText(top_amount_text, log=False)
+    
+    # *reward_text_bottom* updates
+    if reward_text_bottom.status == NOT_STARTED and frameN >= 0:
+        # keep track of start time/frame for later
+        reward_text_bottom.frameNStart = frameN  # exact frame index
+        reward_text_bottom.tStart = t  # local t and not account for scr refresh
+        reward_text_bottom.tStartRefresh = tThisFlipGlobal  # on global time
+        win.timeOnFlip(reward_text_bottom, 'tStartRefresh')  # time at next scr refresh
+        reward_text_bottom.setAutoDraw(True)
+    if reward_text_bottom.status == STARTED:
+        if frameN >= (reward_text_bottom.frameNStart + nFrames):
+            # keep track of stop time/frame for later
+            reward_text_bottom.tStop = t  # not accounting for scr refresh
+            reward_text_bottom.frameNStop = frameN  # exact frame index
+            win.timeOnFlip(reward_text_bottom, 'tStopRefresh')  # time at next scr refresh
+            reward_text_bottom.setAutoDraw(False)
+    if reward_text_bottom.status == STARTED:  # only update if drawing
+        reward_text_bottom.setText(bottom_amount_text, log=False)
     
     # check for quit (typically the Esc key)
     if endExpNow or defaultKeyboard.getKeys(keyList=["escape"]):
@@ -1479,8 +1599,16 @@ thisExp.addData('laser_long_practice.started', laser_long_practice.tStartRefresh
 thisExp.addData('laser_long_practice.stopped', laser_long_practice.tStopRefresh)
 thisExp.addData('progress_bar_practice.started', progress_bar_practice.tStartRefresh)
 thisExp.addData('progress_bar_practice.stopped', progress_bar_practice.tStopRefresh)
+thisExp.addData('reward_bar_red.started', reward_bar_red.tStartRefresh)
+thisExp.addData('reward_bar_red.stopped', reward_bar_red.tStopRefresh)
+thisExp.addData('reward_bar.started', reward_bar.tStartRefresh)
+thisExp.addData('reward_bar.stopped', reward_bar.tStopRefresh)
 thisExp.addData('radioactive_practice.started', radioactive_practice.tStartRefresh)
 thisExp.addData('radioactive_practice.stopped', radioactive_practice.tStopRefresh)
+thisExp.addData('reward_text_top.started', reward_text_top.tStartRefresh)
+thisExp.addData('reward_text_top.stopped', reward_text_top.tStopRefresh)
+thisExp.addData('reward_text_bottom.started', reward_text_bottom.tStartRefresh)
+thisExp.addData('reward_text_bottom.stopped', reward_text_bottom.tStopRefresh)
 # the Routine "practiceBlock" was not non-slip safe, so reset the non-slip timer
 routineTimer.reset()
 
