@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 This experiment was created using PsychoPy3 Experiment Builder (v2022.1.2),
-    on Mon 12 Jun 2023 22:42:20 
+    on Mon 12 Jun 2023 23:42:11 
 If you publish work using this script the most relevant publication is:
 
     Peirce J, Gray JR, Simpson S, MacAskill M, Höchenberger R, Sogo H, Kastman E, Lindeløv JK. (2019) 
@@ -400,10 +400,21 @@ reward_text_bottom = visual.TextStim(win=win, name='reward_text_bottom',
     languageStyle='LTR',
     depth=-12.0);
 
+# Initialize components for Routine "afterPractice"
+afterPracticeClock = core.Clock()
+after_practice_explanation = visual.TextStim(win=win, name='after_practice_explanation',
+    text='Well done - this was the practice block!\n\nAs you have seen, the direction of the beams can jump around quickly, and you cannot catch all beams with your shield. That\'s ok - just try to catch as many as possible. The source will have a main direction of attack at any point - if you place your shield in that direction, you will catch most beams. \n\nMoving your shield also costs energy, which will be subtracted from your reward. It is thus important that you only move your shield when you think that the main direction of attack has changed. \n\nPress button "3" to continue.\n\n',
+    font='Open Sans',
+    pos=(0, 0), height=0.04, wrapWidth=1.5, ori=0.0, 
+    color='white', colorSpace='rgb', opacity=None, 
+    languageStyle='LTR',
+    depth=0.0);
+key_resp_afterPractice = keyboard.Keyboard()
+
 # Initialize components for Routine "instructions_mainTask"
 instructions_mainTaskClock = core.Clock()
 text_mainTask = visual.TextStim(win=win, name='text_mainTask',
-    text="Are you ready to start the game?\n\nIn the actual game:\n\n1. You will not see the reward bar - but the rules for earning money remain the same, and you will receive feedback about your reward after every block.\n\n2. We ask you to please focus your eyes on the centre of the radioactive source and don't follow the beams with your eyes. This is to minimise eye-movement artefacts in the MEG data.\n\n3. You will hear tones through your headphones while you play the game. These tones are completely unrelated to the task - you can ignore them and focus on catching the beams.\n\nPress any key to continue.",
+    text="Are you ready to start the game?\n\nIn the actual game:\n\n1. You will not see the reward bar - but the rules for earning money remain the same, and you will receive feedback about your reward after every block.\n\n2. We ask you to please focus your eyes on the centre of the radioactive source and don't follow the beams with your eyes. This is to minimise eye-movement artefacts in the MEG data.\n\n3. You will hear tones through your headphones while you play the game. These tones are completely unrelated to the task - you can ignore them and focus on catching the beams.\n\nPress button 3 to continue.",
     font='Open Sans',
     pos=(0, 0), height=0.04, wrapWidth=1.5, ori=0.0, 
     color='white', colorSpace='rgb', opacity=None, 
@@ -430,7 +441,7 @@ radioactive_colour2 = visual.ImageStim(
     flipHoriz=False, flipVert=False,
     texRes=128.0, interpolate=True, depth=-1.0)
 text_colours = visual.TextStim(win=win, name='text_colours',
-    text='You will encounter two different radioactive sources:\nA red and a blue source.\n\n\n\n\n\n\n\nThe difference between these sources is how often they change their emission angle over time, and therefore how often you will have to adjust your shield position. One of the sources will change its angle of attack more often, whereas the other will remain stable for longer.\n\nThis game has 4 blocks. You will encounter each of the two sources twice. \nPress any key to continue.',
+    text="You will encounter two different radioactive sources:\nA red and a blue source.\n\n\n\n\n\n\n\nThe difference between these sources is how often they change their emission angle over time, and therefore how often you will have to adjust your shield position. One of the sources will change its main angle of attack more often, whereas the other will remain stable for longer.\n\nThis game has 4 blocks. You will encounter each of the two sources twice. \nPress button '3' to continue.",
     font='Open Sans',
     pos=(0, 0), height=0.04, wrapWidth=1.5, ori=0.0, 
     color='white', colorSpace='rgb', opacity=None, 
@@ -1612,6 +1623,102 @@ thisExp.addData('reward_text_bottom.stopped', reward_text_bottom.tStopRefresh)
 # the Routine "practiceBlock" was not non-slip safe, so reset the non-slip timer
 routineTimer.reset()
 
+# ------Prepare to start Routine "afterPractice"-------
+continueRoutine = True
+# update component parameters for each repeat
+key_resp_afterPractice.keys = []
+key_resp_afterPractice.rt = []
+_key_resp_afterPractice_allKeys = []
+# keep track of which components have finished
+afterPracticeComponents = [after_practice_explanation, key_resp_afterPractice]
+for thisComponent in afterPracticeComponents:
+    thisComponent.tStart = None
+    thisComponent.tStop = None
+    thisComponent.tStartRefresh = None
+    thisComponent.tStopRefresh = None
+    if hasattr(thisComponent, 'status'):
+        thisComponent.status = NOT_STARTED
+# reset timers
+t = 0
+_timeToFirstFrame = win.getFutureFlipTime(clock="now")
+afterPracticeClock.reset(-_timeToFirstFrame)  # t0 is time of first possible flip
+frameN = -1
+
+# -------Run Routine "afterPractice"-------
+while continueRoutine:
+    # get current time
+    t = afterPracticeClock.getTime()
+    tThisFlip = win.getFutureFlipTime(clock=afterPracticeClock)
+    tThisFlipGlobal = win.getFutureFlipTime(clock=None)
+    frameN = frameN + 1  # number of completed frames (so 0 is the first frame)
+    # update/draw components on each frame
+    
+    # *after_practice_explanation* updates
+    if after_practice_explanation.status == NOT_STARTED and tThisFlip >= 0.0-frameTolerance:
+        # keep track of start time/frame for later
+        after_practice_explanation.frameNStart = frameN  # exact frame index
+        after_practice_explanation.tStart = t  # local t and not account for scr refresh
+        after_practice_explanation.tStartRefresh = tThisFlipGlobal  # on global time
+        win.timeOnFlip(after_practice_explanation, 'tStartRefresh')  # time at next scr refresh
+        after_practice_explanation.setAutoDraw(True)
+    
+    # *key_resp_afterPractice* updates
+    waitOnFlip = False
+    if key_resp_afterPractice.status == NOT_STARTED and tThisFlip >= 0.0-frameTolerance:
+        # keep track of start time/frame for later
+        key_resp_afterPractice.frameNStart = frameN  # exact frame index
+        key_resp_afterPractice.tStart = t  # local t and not account for scr refresh
+        key_resp_afterPractice.tStartRefresh = tThisFlipGlobal  # on global time
+        win.timeOnFlip(key_resp_afterPractice, 'tStartRefresh')  # time at next scr refresh
+        key_resp_afterPractice.status = STARTED
+        # keyboard checking is just starting
+        waitOnFlip = True
+        win.callOnFlip(key_resp_afterPractice.clock.reset)  # t=0 on next screen flip
+        win.callOnFlip(key_resp_afterPractice.clearEvents, eventType='keyboard')  # clear events on next screen flip
+    if key_resp_afterPractice.status == STARTED and not waitOnFlip:
+        theseKeys = key_resp_afterPractice.getKeys(keyList=['3'], waitRelease=False)
+        _key_resp_afterPractice_allKeys.extend(theseKeys)
+        if len(_key_resp_afterPractice_allKeys):
+            key_resp_afterPractice.keys = _key_resp_afterPractice_allKeys[-1].name  # just the last key pressed
+            key_resp_afterPractice.rt = _key_resp_afterPractice_allKeys[-1].rt
+            # a response ends the routine
+            continueRoutine = False
+    
+    # check for quit (typically the Esc key)
+    if endExpNow or defaultKeyboard.getKeys(keyList=["escape"]):
+        core.quit()
+    
+    # check if all components have finished
+    if not continueRoutine:  # a component has requested a forced-end of Routine
+        break
+    continueRoutine = False  # will revert to True if at least one component still running
+    for thisComponent in afterPracticeComponents:
+        if hasattr(thisComponent, "status") and thisComponent.status != FINISHED:
+            continueRoutine = True
+            break  # at least one component has not yet finished
+    
+    # refresh the screen
+    if continueRoutine:  # don't flip if this routine is over or we'll get a blank screen
+        win.flip()
+
+# -------Ending Routine "afterPractice"-------
+for thisComponent in afterPracticeComponents:
+    if hasattr(thisComponent, "setAutoDraw"):
+        thisComponent.setAutoDraw(False)
+thisExp.addData('after_practice_explanation.started', after_practice_explanation.tStartRefresh)
+thisExp.addData('after_practice_explanation.stopped', after_practice_explanation.tStopRefresh)
+# check responses
+if key_resp_afterPractice.keys in ['', [], None]:  # No response was made
+    key_resp_afterPractice.keys = None
+thisExp.addData('key_resp_afterPractice.keys',key_resp_afterPractice.keys)
+if key_resp_afterPractice.keys != None:  # we had a response
+    thisExp.addData('key_resp_afterPractice.rt', key_resp_afterPractice.rt)
+thisExp.addData('key_resp_afterPractice.started', key_resp_afterPractice.tStartRefresh)
+thisExp.addData('key_resp_afterPractice.stopped', key_resp_afterPractice.tStopRefresh)
+thisExp.nextEntry()
+# the Routine "afterPractice" was not non-slip safe, so reset the non-slip timer
+routineTimer.reset()
+
 # ------Prepare to start Routine "instructions_mainTask"-------
 continueRoutine = True
 # update component parameters for each repeat
@@ -1665,7 +1772,7 @@ while continueRoutine:
         win.callOnFlip(key_resp_mainTask.clock.reset)  # t=0 on next screen flip
         win.callOnFlip(key_resp_mainTask.clearEvents, eventType='keyboard')  # clear events on next screen flip
     if key_resp_mainTask.status == STARTED and not waitOnFlip:
-        theseKeys = key_resp_mainTask.getKeys(keyList=None, waitRelease=False)
+        theseKeys = key_resp_mainTask.getKeys(keyList=['3'], waitRelease=False)
         _key_resp_mainTask_allKeys.extend(theseKeys)
         if len(_key_resp_mainTask_allKeys):
             key_resp_mainTask.keys = _key_resp_mainTask_allKeys[-1].name  # just the last key pressed
@@ -1779,7 +1886,7 @@ while continueRoutine:
         win.callOnFlip(key_resp_colours.clock.reset)  # t=0 on next screen flip
         win.callOnFlip(key_resp_colours.clearEvents, eventType='keyboard')  # clear events on next screen flip
     if key_resp_colours.status == STARTED and not waitOnFlip:
-        theseKeys = key_resp_colours.getKeys(keyList=None, waitRelease=False)
+        theseKeys = key_resp_colours.getKeys(keyList=['3'], waitRelease=False)
         _key_resp_colours_allKeys.extend(theseKeys)
         if len(_key_resp_colours_allKeys):
             key_resp_colours.keys = _key_resp_colours_allKeys[-1].name  # just the last key pressed
