@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 This experiment was created using PsychoPy3 Experiment Builder (v2022.1.2),
-    on Sun 11 Jun 2023 21:14:45 
+    on Mon 12 Jun 2023 11:49:34 
 If you publish work using this script the most relevant publication is:
 
     Peirce J, Gray JR, Simpson S, MacAskill M, Höchenberger R, Sogo H, Kastman E, Lindeløv JK. (2019) 
@@ -129,6 +129,7 @@ imageRoot = 'images/'
 # retrieve the current session csv file
 sessionFileName = (sequenceRoot + "cogpsy_main_v1_order" 
     + str(expInfo['order']) + "/session_s1_main_v1.csv")
+practiceBlockFile = "practice_v1_block1.csv"
     
 # initialise list containing data to be saved
 saveData = [["phase","blockID","currentFrame","laserRotation",
@@ -158,9 +159,6 @@ key_left = '1';
 screen_refreshRate = win.getActualFrameRate()
 ROTATION_SPEED = 1;
 CIRCLE_RADIUS = 3;
-#SHIELD_GROWTH_SPEED = 20; # in degrees
-#minShieldDegrees = 20;
-#maxShieldDegrees = 60;
 
 # initialise variables that will be updated as experiment progresses
 # shield variables
@@ -221,9 +219,12 @@ triggers = dict(
     key_left=40,
     key_release=50,
     tone_1=1,
-    tone_2=2
+    tone_2=2,
+    begin_pract=60,
+    begin_main=70
 )
 
+# Define function for sending triggers during the main trial loop
 if send_triggers:
     def send_trigger(triggerValue):
         """
@@ -235,8 +236,13 @@ else:
     def send_trigger(code):
         print('sending trigger: ' + str(code))
         
-trig = triggers['exp_start']
-#send_trigger(trig)
+# exp_start and _end triggers as well as block_start and _end
+# triggers will be sent via their trigger components
+expStartTrig = triggers['exp_start']
+expEndTrig = triggers['exp_end']
+blockStartTrig = triggers['block_start']
+blockEndTrig = triggers['block_end']
+
 title = visual.TextBox2(
      win, text='Save-the-world task', font='Open Sans',
      pos=(0, 0.35),     letterHeight=0.05,
@@ -1031,7 +1037,7 @@ toneIndex = 0
 toneEndFrame = 0
 
 #load stimulusStream into NumPy array
-block_path = sequenceRoot + "practice_v1_block1.csv"
+block_path = sequenceRoot + practiceBlockFile
 f = open(block_path, 'r')
 storedStream_np = []
 for line in f:
@@ -1052,8 +1058,11 @@ laserRotation = float(storedStream_np[0][1])
 trueVariance = float(storedStream_np[0][2])
 
 #initialise variables that will be updated as experiment progresses
-triggerValue = 11
+
+# send a trigger to mark the start of a main block
+triggerValue = triggers['begin_pract']
 sendTrigger = True
+send_trigger(triggerValue)
 #start by sending a trigger when subject presses a button
 sendResponseTriggers = True
 totalReward = 1;
@@ -1141,7 +1150,7 @@ while continueRoutine:
     LRkeys_released = kb.getKeys(keyList=keys_move,clear=True,waitRelease=True)
     if len(LRkeys_released)>0: #if so, then flush out the keys one final time
         LRkeys_pressed = kb.getKeys(keyList=keys_move,clear=True,waitRelease=False)
-        triggerValue = 7
+        triggerValue = triggers['key_release']
         sendTrigger = True
         send_trigger(triggerValue)
         #win.callOnFlip(trialTrigger.setData, int(triggerValue))
@@ -1154,10 +1163,10 @@ while continueRoutine:
     if len(LRkeys_pressed)>0:
         if LRkeys_pressed[-1]==key_right:
             shieldRotation += ROTATION_SPEED;
-            newTriggerValue = 3
+            newTriggerValue = triggers['key_right']
         if LRkeys_pressed[-1]==key_left:
             shieldRotation -= ROTATION_SPEED;
-            newTriggerValue = 4
+            newTriggerValue = triggers['key_left']
         if sendResponseTriggers:
             triggerValue = newTriggerValue
             sendTrigger = True
@@ -1201,9 +1210,9 @@ while continueRoutine:
         if not sendTrigger:
             #we'll send different stim change triggers depending on hit/no-hit
             if currentHit:
-                triggerValue = 1
+                triggerValue = triggers['laser_hit']
             else:
-                triggerValue = 2
+                triggerValue = triggers['laser_miss']
     
             sendTrigger = True
             send_trigger(triggerValue)
@@ -1225,9 +1234,9 @@ while continueRoutine:
             if not sendTrigger:
                 #we'll send different stim change triggers depending on hit/no-hit
                 if currentHit:
-                    triggerValue = 1
+                    triggerValue = triggers['laser_hit']
                 else:
-                    triggerValue = 2
+                    triggerValue = triggers['laser_miss']
     
                 sendTrigger = True
                 send_trigger(triggerValue)
@@ -1261,7 +1270,7 @@ while continueRoutine:
             toneTrigger,toneVolatility,toneIndex,toneEndFrame])
         currentFrame = currentFrame + 1;
     else:
-        triggerValue = 99
+        triggerValue = triggers['last_frame']
         sendTrigger = True
         send_trigger(triggerValue)
         #win.callOnFlip(trialTrigger.setData, int(triggerValue))
@@ -1446,7 +1455,8 @@ while continueRoutine:
 for thisComponent in practiceBlockComponents:
     if hasattr(thisComponent, "setAutoDraw"):
         thisComponent.setAutoDraw(False)
-totalReward_tot = totalReward_tot + totalReward
+# this block will not count towards the total reward
+#totalReward_tot = totalReward_tot + totalReward
 totalReward_text = "£%.2f" %(totalReward)
 
 # save the output data for this block
@@ -1847,8 +1857,10 @@ for thisBlock in blocks:
     hit_i = 0
     first_hit = 0
     
-    triggerValue = 11
+    # send a trigger to mark the start of a main block
+    triggerValue = triggers['begin_main']
     sendTrigger = True
+    send_trigger(triggerValue)
     #start by sending a trigger when subject presses a button
     sendResponseTriggers = True
     totalReward = 1;
@@ -1984,7 +1996,7 @@ for thisBlock in blocks:
         LRkeys_released = kb.getKeys(keyList=keys_move,clear=True,waitRelease=True)
         if len(LRkeys_released)>0: #if so, then flush out the keys one final time
             LRkeys_pressed = kb.getKeys(keyList=keys_move,clear=True,waitRelease=False)
-            triggerValue = 7
+            triggerValue = triggers['key_release']
             sendTrigger = True
             send_trigger(triggerValue)
             #win.callOnFlip(trialTrigger.setData, int(triggerValue))
@@ -1997,10 +2009,10 @@ for thisBlock in blocks:
         if len(LRkeys_pressed)>0:
             if LRkeys_pressed[-1]==key_right:
                 shieldRotation += ROTATION_SPEED;
-                newTriggerValue = 3
+                newTriggerValue = triggers['key_right']
             if LRkeys_pressed[-1]==key_left:
                 shieldRotation -= ROTATION_SPEED;
-                newTriggerValue = 4
+                newTriggerValue = triggers['key_left']
             if sendResponseTriggers:
                 triggerValue = newTriggerValue
                 sendTrigger = True
@@ -2044,9 +2056,9 @@ for thisBlock in blocks:
             if not sendTrigger:
                 #we'll send different stim change triggers depending on hit/no-hit
                 if currentHit:
-                    triggerValue = 1
+                    triggerValue = triggers['laser_hit']
                 else:
-                    triggerValue = 2
+                    triggerValue = triggers['laser_miss']
         
                 sendTrigger = True
                 send_trigger(triggerValue)
@@ -2068,9 +2080,9 @@ for thisBlock in blocks:
                 if not sendTrigger:
                     #we'll send different stim change triggers depending on hit/no-hit
                     if currentHit:
-                        triggerValue = 1
+                        triggerValue = triggers['laser_hit']
                     else:
-                        triggerValue = 2
+                        triggerValue = triggers['laser_miss']
         
                     sendTrigger = True
                     send_trigger(triggerValue)
@@ -2104,7 +2116,7 @@ for thisBlock in blocks:
             toneTrig,toneVolatility,toneIndex,toneEndFrame])
             currentFrame = currentFrame + 1;
         else:
-            triggerValue = 99
+            triggerValue = triggers['last_frame']
             sendTrigger = True
             send_trigger(triggerValue)
             #win.callOnFlip(trialTrigger.setData, int(triggerValue))
